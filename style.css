@@ -191,3 +191,23 @@ footer a{color:#fff}
 .back-link{display:inline-block;margin-top:25px;color:var(--blue);font-size:12px;font-weight:800}
 @media(max-width:850px){.catalogue-grid{grid-template-columns:1fr 1fr}.detail-layout{grid-template-columns:1fr;gap:35px}.detail-image{min-height:380px}}
 @media(max-width:560px){.catalogue-grid{grid-template-columns:1fr}.catalogue-hero{padding:65px 0 45px}.detail-hero{padding-top:25px}.detail-image{min-height:300px}}
+
+
+/* Large product categories on homepage */
+.home-categories{padding:75px 0 85px;background:#fff}
+.home-categories-heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:32px}
+.home-categories-heading h2{margin-top:8px}
+.home-categories-heading p{max-width:390px;color:var(--muted);font-size:14px}
+.home-category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.home-category{min-height:330px;border-radius:24px;padding:34px;position:relative;overflow:hidden;display:flex;align-items:flex-end;color:#fff;border:1px solid rgba(255,255,255,.15);transition:.28s}
+.home-category:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,31,52,.96),rgba(23,105,170,.82))}
+.home-category.safe-category:before{background:linear-gradient(135deg,rgba(8,42,68,.98),rgba(11,61,102,.82))}
+.home-category:after{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-75px;top:-80px}
+.home-category:hover{transform:translateY(-7px);box-shadow:0 22px 55px rgba(20,40,60,.18)}
+.category-number{position:absolute;top:28px;right:31px;z-index:2;font-size:12px;font-weight:800;letter-spacing:.15em;color:#9bd4f4}
+.category-content{position:relative;z-index:2;max-width:560px}
+.category-content>span{font-size:10px;font-weight:800;letter-spacing:.18em;color:#a9d9f3}
+.category-content h3{font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 14px}
+.category-content p{max-width:500px;color:#dbeaf3;font-size:14px;line-height:1.7;margin-bottom:22px}
+.category-content strong{font-size:13px;color:#fff}
+@media(max-width:760px){.home-categories{padding:60px 0}.home-categories-heading{align-items:flex-start;flex-direction:column}.home-category-grid{grid-template-columns:1fr}.home-category{min-height:290px;padding:28px}.category-content h3{font-size:38px}}
