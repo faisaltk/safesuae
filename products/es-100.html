@@ -41,10 +41,17 @@
 
     <div class="detail-layout">
 
-      <div class="detail-image">
-        <img src="images/ES-100.webp"
-             alt="Eagle Fire Resistant Safes ES-100"
-             style="width:100%;height:100%;object-fit:contain;border-radius:20px;">
+      <div class="product-gallery" data-product-gallery>
+        <div class="gallery-main">
+          <img src="images/ES-100.webp" alt="Eagle Fire Resistant Safes ES-100">
+          <button class="gallery-arrow prev" type="button" aria-label="Previous image">‹</button>
+          <button class="gallery-arrow next" type="button" aria-label="Next image">›</button>
+        </div>
+        <div class="gallery-dots" aria-label="Product images"></div>
+        <div class="gallery-thumbs" aria-label="Product image thumbnails"></div>
+        <div class="gallery-source-images" hidden>
+          <span data-gallery-src="images/ES-100.webp" data-gallery-alt="Eagle Fire Resistant Safes ES-100"></span>
+        </div>
       </div>
 
       <div class="detail-info">
