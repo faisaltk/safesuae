@@ -39,6 +39,14 @@ document.getElementById('category').textContent=p.category;
 document.getElementById('imageCategory').textContent=p.category;
 document.getElementById('description').textContent=intro;
 document.getElementById('details').innerHTML=items.map(x=>'<li>'+x+'</li>').join('')+'<li><strong>Product:</strong> '+p.name+'</li><li><strong>Category:</strong> '+p.category+'</li>';
-document.getElementById('whatsapp').href='https://wa.me/971559912945?text=Hello%20ZEN%20GROUP%20FZE%2C%20I%20am%20interested%20in%20'+encodeURIComponent(p.name)+'%20.%20Please%20share%20details%20and%20price.';
-document.getElementById('back').href=safe?'safes/index.html':'office/index.html';
+const wa=document.getElementById('whatsapp');
+const back=document.getElementById('back');
+const waUrl='https://wa.me/971559912945?text='+encodeURIComponent('Hello ZEN GROUP FZE, I am interested in '+p.name+'. Please share details and price.');
+const backUrl=safe?'safes/index.html':'office/index.html';
+wa.href=waUrl;
+wa.target='_blank';
+wa.rel='noopener noreferrer';
+wa.onclick=()=>{ window.open(waUrl,'_blank','noopener'); return false; };
+back.href=backUrl;
+back.onclick=()=>{ window.location.href=backUrl; return false; };
 </script></body></html>
