@@ -21,22 +21,8 @@ from PIL import Image
 from io import BytesIO
 
 BASE = "https://www.safeoneuae.com"
-CATEGORY_URLS = [
-    "/en/products/home-safes-hotel-safes",
-    "/en/products/fire-resistant-safes",
-    "/en/products/fire-resistant-filing-cabinet",
-    "/en/products/fire-and-burglary-resistant-safes",
-    "/en/products/premium-luxury-interior-safes",
-    "/en/products/deposit-safe",
-    "/en/products/data-and-media-safes",
-    "/en/products/safe-deposit-lockers",
-    "/en/products/vault-room-door",
-    "/en/products/cash-counting-machine",
-    "/en/products/personal-home-and-office-shredders",
-    "/en/products/binding-machine",
-    "/en/products/lamination-machine",
-    "/en/products/storage-solution",
-]
+START_URL = f"{BASE}/en/products"
+
 PRODUCT_FILE = Path("products/product-detail.html")
 IMAGE_DIR = Path("products/images")
 SKIP = {"eagle-es-100"}
