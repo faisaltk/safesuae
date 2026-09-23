@@ -38,7 +38,10 @@ document.getElementById('details').innerHTML=info.i.map(x=>'<li>'+x+'</li>').joi
 const wa=document.getElementById('whatsapp');
 const back=document.getElementById('back');
 const waUrl='https://api.whatsapp.com/send/?phone=971559912945&text&type=phone_number&app_absent=0';
-const backUrl=safe?'https://safesuae.com/products/safes/index.html':'https://safesuae.com/products/office/index.html';
+const ref=document.referrer||'';
+const fromOffice=officeCats.includes(p.category)||ref.includes('/products/office/');
+const backUrl=fromOffice?'https://safesuae.com/products/office/index.html':'https://safesuae.com/products/safes/index.html';
 wa.href=waUrl;
 back.href=backUrl;
+back.onclick=function(e){e.preventDefault();window.location.assign(backUrl);};
 </script></body></html>
