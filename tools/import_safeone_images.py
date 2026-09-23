@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """
-Download permitted SafeOne product images for the ZEN GROUP catalogue.
+Import permitted SafeOne product images for the ZEN GROUP catalogue.
 
-This script reads the product names already used by the website, finds matching
-SafeOne product-detail URLs from the public sitemap, downloads only those
-matching product pages, extracts the OpenGraph main image, and saves it as
-products/images/<our-slug>.webp (or .jpg/.png when WebP is unavailable).
-
-ES-100 is intentionally skipped because the repository already contains it.
+Only the SafeOne categories used by this catalogue are visited. Product pages
+are fetched only after their URL matches a product already present in our
+catalogue. ES-100 is skipped because products/images/ES-100.webp already exists.
 """
 
 from __future__ import annotations
@@ -16,25 +13,36 @@ import html
 import re
 import time
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
+from PIL import Image
+from io import BytesIO
 
 BASE = "https://www.safeoneuae.com"
-SITEMAP = f"{BASE}/sitemap.xml"
+CATEGORY_URLS = [
+    "/en/products/home-safes-hotel-safes",
+    "/en/products/fire-resistant-safes",
+    "/en/products/fire-resistant-filing-cabinet",
+    "/en/products/fire-and-burglary-resistant-safes",
+    "/en/products/premium-luxury-interior-safes",
+    "/en/products/deposit-safe",
+    "/en/products/data-and-media-safes",
+    "/en/products/safe-deposit-lockers",
+    "/en/products/vault-room-door",
+    "/en/products/cash-counting-machine",
+    "/en/products/personal-home-and-office-shredders",
+    "/en/products/binding-machine",
+    "/en/products/lamination-machine",
+    "/en/products/storage-solution",
+]
 PRODUCT_FILE = Path("products/product-detail.html")
 IMAGE_DIR = Path("products/images")
 SKIP = {"eagle-es-100"}
-HEADERS = {"User-Agent": "ZEN-GROUP-product-image-import/1.0"}
 
 session = requests.Session()
-session.headers.update(HEADERS)
-
-
-def slugify(value: str) -> str:
-    value = value.lower().replace("&", " and ")
-    value = re.sub(r"[^a-z0-9]+", "-", value)
-    return re.sub(r"-+", "-", value).strip("-")
+session.headers.update({"User-Agent": "ZEN-GROUP-permitted-product-image-import/1.0"})
 
 
 def norm(value: str) -> str:
@@ -47,60 +55,93 @@ def read_targets() -> dict[str, str]:
     return {slug: html.unescape(name) for slug, name in pairs}
 
 
-def sitemap_urls() -> list[str]:
-    r = session.get(SITEMAP, timeout=30)
-    r.raise_for_status()
-    soup = BeautifulSoup(r.text, "xml")
-    return [
-        loc.get_text(strip=True)
-        for loc in soup.find_all("loc")
-        if "/en/product-details/" in loc.get_text()
-    ]
+def category_pages() -> list[str]:
+    pages: set[str] = set()
+    queue = [urljoin(BASE, path) for path in CATEGORY_URLS]
+
+    while queue:
+        url = queue.pop(0)
+        if url in pages:
+            continue
+        pages.add(url)
+
+        try:
+            r = session.get(url, timeout=30)
+            r.raise_for_status()
+        except Exception as exc:
+            print(f"CATEGORY ERROR: {url}: {exc}")
+            continue
+
+        soup = BeautifulSoup(r.text, "html.parser")
+        base_path = urlparse(url).path
+
+        # Follow pagination links belonging to this same category only.
+        for a in soup.find_all("a", href=True):
+            href = urljoin(url, a["href"])
+            parsed = urlparse(href)
+            if parsed.netloc == urlparse(BASE).netloc and parsed.path == base_path:
+                if href not in pages and len(pages) < 100:
+                    queue.append(href)
+
+    return sorted(pages)
 
 
-def target_tokens(name: str) -> list[str]:
-    tokens = re.findall(r"[a-z0-9]+", name.lower())
-    # Model numbers are the strongest match. Otherwise use the meaningful words.
-    strong = [t for t in tokens if any(ch.isdigit() for ch in t)]
-    return strong or [t for t in tokens if len(t) >= 4]
+def product_urls() -> list[str]:
+    urls: set[str] = set()
+    for category_url in category_pages():
+        try:
+            r = session.get(category_url, timeout=30)
+            r.raise_for_status()
+        except Exception:
+            continue
+
+        soup = BeautifulSoup(r.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            href = urljoin(category_url, a["href"])
+            if "/en/product-details/" in href:
+                urls.add(href.split("#", 1)[0])
+    return sorted(urls)
 
 
 def score_url(name: str, url: str) -> int:
     u = norm(url.rsplit("/", 1)[-1])
-    tokens = target_tokens(name)
-    score = sum(1 for t in tokens if norm(t) in u)
+    tokens = re.findall(r"[a-z0-9]+", name.lower())
+    strong = [t for t in tokens if any(ch.isdigit() for ch in t)]
+    tokens = strong or [t for t in tokens if len(t) >= 4]
 
-    # Brand + distinctive model/name is a strong match.
-    n = norm(name)
-    if n and n in u:
+    score = sum(1 for token in tokens if norm(token) in u)
+    if norm(name) in u:
         score += 20
     return score
 
 
 def find_url(name: str, urls: list[str]) -> str | None:
-    scored = sorted(((score_url(name, u), u) for u in urls), reverse=True)
-    if not scored or scored[0][0] < 1:
+    ranked = sorted(((score_url(name, u), u) for u in urls), reverse=True)
+    if not ranked:
         return None
-    best_score, best_url = scored[0]
-    # Avoid weak accidental matches for generic storage names.
-    if best_score < 2 and len(target_tokens(name)) > 1:
+    score, url = ranked[0]
+    if score < 2 and len(re.findall(r"[a-z0-9]+", name.lower())) > 1:
         return None
-    return best_url
+    return url
+
+
+def save_as_webp(data: bytes, output: Path) -> None:
+    image = Image.open(BytesIO(data)).convert("RGB")
+    image.save(output, "WEBP", quality=88, method=6)
 
 
 def main() -> int:
     IMAGE_DIR.mkdir(parents=True, exist_ok=True)
     targets = read_targets()
-    urls = sitemap_urls()
-    print(f"Found {len(urls)} SafeOne product-detail URLs.")
-    print(f"Website catalogue contains {len(targets)} products.")
+    urls = product_urls()
 
-    downloaded = 0
-    skipped = 0
-    missing = 0
+    print(f"Found {len(urls)} permitted-category product pages.")
+    print(f"Matching against {len(targets)} website products.")
+
+    downloaded = skipped = missing = 0
 
     for slug, name in targets.items():
-        if slug in SKIP:
+        if slug in SKIP and (IMAGE_DIR / "ES-100.webp").exists():
             print(f"SKIP existing image: {name}")
             skipped += 1
             continue
@@ -117,17 +158,16 @@ def main() -> int:
             soup = BeautifulSoup(page.text, "html.parser")
 
             image_url = None
-            for selector in [
-                ('meta', {'property': 'og:image'}),
-                ('meta', {'name': 'twitter:image'}),
-            ]:
-                tag = soup.find(*selector)
+            for attrs in (
+                {"property": "og:image"},
+                {"name": "twitter:image"},
+            ):
+                tag = soup.find("meta", attrs=attrs)
                 if tag and tag.get("content"):
                     image_url = urljoin(source_url, tag["content"])
                     break
 
             if not image_url:
-                # Fallback: choose a product-looking image from the page.
                 for img in soup.find_all("img"):
                     src = img.get("src") or img.get("data-src")
                     if src and "logo" not in src.lower() and "whatsapp" not in src.lower():
@@ -139,21 +179,12 @@ def main() -> int:
                 missing += 1
                 continue
 
-            img = session.get(image_url, timeout=30)
-            img.raise_for_status()
+            image = session.get(image_url, timeout=30)
+            image.raise_for_status()
 
-            content_type = (img.headers.get("Content-Type") or "").lower()
-            if "webp" in content_type:
-                ext = ".webp"
-            elif "png" in content_type:
-                ext = ".png"
-            else:
-                ext = ".jpg"
-
-            # Prefer WebP for the site's catalogue when the source is WebP.
-            out = IMAGE_DIR / f"{slug}{ext}"
-            out.write_bytes(img.content)
-            print(f"OK: {name} -> {out}")
+            output = IMAGE_DIR / f"{slug}.webp"
+            save_as_webp(image.content, output)
+            print(f"OK: {name} -> {output}")
             downloaded += 1
             time.sleep(0.25)
 
@@ -161,7 +192,6 @@ def main() -> int:
             print(f"ERROR: {name}: {exc}")
             missing += 1
 
-    print()
     print(f"Downloaded: {downloaded}")
     print(f"Skipped existing: {skipped}")
     print(f"Missing/errors: {missing}")
