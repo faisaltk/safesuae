@@ -38,7 +38,8 @@ searchInput?.addEventListener('input', (e) => {
   noResults.style.display = visible ? 'none' : 'block';
 });
 
-document.getElementById('year').textContent = new Date().getFullYear();
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 
 /* Swipeable product gallery */
