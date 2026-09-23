@@ -97,3 +97,45 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   },{passive:true});
   render();
 });
+
+/* Automatically use imported product images */
+(function loadImportedProductImages() {
+  const imageFor = (slug) => '/products/images/' + slug + '.webp';
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    const link = card.querySelector('a.view-btn[href*="product="]');
+    const box = card.querySelector('.product-image');
+    if (!link || !box) return;
+
+    const match = link.href.match(/[?&]product=([^&#]+)/);
+    if (!match) return;
+
+    const slug = decodeURIComponent(match[1]);
+    const img = new Image();
+    img.alt = card.querySelector('h2')?.textContent?.trim() || 'Product image';
+    img.loading = 'lazy';
+    img.src = imageFor(slug);
+    img.onload = () => {
+      box.classList.remove('image-placeholder');
+      box.innerHTML = '';
+      box.appendChild(img);
+    };
+  });
+
+  const detailName = document.getElementById('name');
+  const detailBox = document.querySelector('.product-gallery .gallery-main');
+  const key = new URLSearchParams(location.search).get('product');
+
+  if (detailName && detailBox && key) {
+    const img = new Image();
+    img.alt = detailName.textContent.trim() + ' product image';
+    img.loading = 'eager';
+    img.src = imageFor(key);
+    img.onload = () => {
+      detailBox.classList.remove('image-placeholder');
+      detailBox.innerHTML = '';
+      detailBox.appendChild(img);
+    };
+  }
+})();
+
