@@ -43,7 +43,7 @@ def read_targets() -> dict[str, str]:
 
 def category_pages() -> list[str]:
     pages: set[str] = set()
-    queue = [urljoin(BASE, path) for path in CATEGORY_URLS]
+    queue = [START_URL]
 
     while queue:
         url = queue.pop(0)
@@ -55,22 +55,22 @@ def category_pages() -> list[str]:
             r = session.get(url, timeout=30)
             r.raise_for_status()
         except Exception as exc:
-            print(f"CATEGORY ERROR: {url}: {exc}")
+            print(f"CATALOG ERROR: {url}: {exc}")
             continue
 
         soup = BeautifulSoup(r.text, "html.parser")
         base_path = urlparse(url).path
+        base_host = urlparse(BASE).netloc
 
-        # Follow pagination links belonging to this same category only.
+        # Follow every pagination link for the main SafeOne catalogue.
         for a in soup.find_all("a", href=True):
             href = urljoin(url, a["href"])
             parsed = urlparse(href)
-            if parsed.netloc == urlparse(BASE).netloc and parsed.path == base_path:
-                if href not in pages and len(pages) < 100:
+            if parsed.netloc == base_host and parsed.path == base_path:
+                if href not in pages and len(pages) < 30:
                     queue.append(href)
 
     return sorted(pages)
-
 
 def product_urls() -> list[str]:
     urls: set[str] = set()
