@@ -20,8 +20,8 @@ document.querySelectorAll('.nav a').forEach(link => {
   link.addEventListener('click', () => nav.classList.remove('open'));
 });
 
-const searchInput = document.getElementById('searchInput');
-const products = [...document.querySelectorAll('.product')];
+const searchInput = document.getElementById('searchInput') || document.getElementById('catalogueSearch');
+const products = [...document.querySelectorAll('.product, .product-card')];
 const noResults = document.getElementById('noResults');
 
 searchInput?.addEventListener('input', (e) => {
@@ -29,13 +29,13 @@ searchInput?.addEventListener('input', (e) => {
   let visible = 0;
 
   products.forEach(product => {
-    const text = (product.dataset.search + ' ' + product.innerText).toLowerCase();
+    const text = ((product.dataset.search || '') + ' ' + product.innerText).toLowerCase();
     const match = text.includes(query);
     product.style.display = match ? '' : 'none';
     if (match) visible++;
   });
 
-  noResults.style.display = visible ? 'none' : 'block';
+  if (noResults) noResults.style.display = visible ? 'none' : 'block';
 });
 
 const yearEl = document.getElementById('year');
