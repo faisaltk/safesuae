@@ -160,7 +160,6 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   const image = document.getElementById('slideshowImage');
   const name = document.getElementById('slideshowName');
   const category = document.getElementById('slideshowCategory');
-  const counter = document.getElementById('slideshowCounter');
   const progress = document.getElementById('slideshowProgress');
   const prev = document.getElementById('slideshowPrev');
   const next = document.getElementById('slideshowNext');
@@ -197,7 +196,6 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
       image.alt = product.name + ' product image';
       name.textContent = product.name;
       category.textContent = product.category;
-      counter.textContent = (position + 1) + ' / ' + products.length;
     };
 
     if (animate) {
