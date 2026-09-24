@@ -150,3 +150,143 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
     attachImage(detailBox, key, detailName.textContent.trim() + ' product image', true);
   }
 })();
+
+
+/* Random product slideshow on the homepage gallery */
+(function initProductSlideshow() {
+  const slideshow = document.getElementById('productSlideshow');
+  if (!slideshow) return;
+
+  const image = document.getElementById('slideshowImage');
+  const name = document.getElementById('slideshowName');
+  const category = document.getElementById('slideshowCategory');
+  const counter = document.getElementById('slideshowCounter');
+  const progress = document.getElementById('slideshowProgress');
+  const prev = document.getElementById('slideshowPrev');
+  const next = document.getElementById('slideshowNext');
+
+  const imageUrl = (slug) => '/products/images/' + encodeURIComponent(slug) + '.webp';
+  const fallbackProducts = [
+    {slug:'eagle-es-100',name:'Eagle ES-100',category:'LARGE COMMERCIAL'}
+  ];
+
+  let products = [];
+  let order = [];
+  let position = 0;
+  let timer = null;
+  let progressTimer = null;
+  let busy = false;
+
+  const shuffle = (items) => {
+    const result = [...items];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  };
+
+  const resetProgress = () => {
+    if (progressTimer) clearInterval(progressTimer);
+    const started = performance.now();
+    progress.style.width = '0%';
+    progressTimer = setInterval(() => {
+      const percent = Math.min(100, ((performance.now() - started) / 10000) * 100);
+      progress.style.width = percent + '%';
+      if (percent >= 100) clearInterval(progressTimer);
+    }, 100);
+  };
+
+  const showProduct = (product, animate = true) => {
+    if (!product) return;
+
+    const apply = () => {
+      image.src = imageUrl(product.slug);
+      image.alt = product.name + ' product image';
+      name.textContent = product.name;
+      category.textContent = product.category;
+      counter.textContent = (position + 1) + ' / ' + products.length;
+      resetProgress();
+    };
+
+    if (animate) {
+      slideshow.classList.remove('is-visible');
+      setTimeout(() => {
+        apply();
+        slideshow.classList.add('is-visible');
+      }, 180);
+    } else {
+      apply();
+      slideshow.classList.add('is-visible');
+    }
+  };
+
+  const nextProduct = () => {
+    if (!products.length || busy) return;
+    busy = true;
+    position++;
+    if (position >= order.length) {
+      order = shuffle(products);
+      position = 0;
+    }
+    showProduct(order[position]);
+    setTimeout(() => { busy = false; }, 220);
+  };
+
+  const previousProduct = () => {
+    if (!products.length || busy) return;
+    busy = true;
+    position--;
+    if (position < 0) {
+      position = order.length - 1;
+    }
+    showProduct(order[position]);
+    setTimeout(() => { busy = false; }, 220);
+  };
+
+  const startTimer = () => {
+    if (timer) clearInterval(timer);
+    timer = setInterval(nextProduct, 10000);
+  };
+
+  const loadProducts = async () => {
+    try {
+      const response = await fetch('/products/product-detail.html', {cache:'no-store'});
+      if (!response.ok) throw new Error('Could not load product list');
+      const html = await response.text();
+      const matches = [...html.matchAll(/{"slug":"([^"]+)","name":"([^"]+)","category":"([^"]+)"}/g)];
+      products = matches.map(match => ({
+        slug: match[1],
+        name: match[2],
+        category: match[3]
+      }));
+
+      if (!products.length) throw new Error('No products found');
+    } catch (error) {
+      console.warn('Product slideshow could not load the catalogue.', error);
+      products = fallbackProducts;
+    }
+
+    order = shuffle(products);
+    position = 0;
+    showProduct(order[position], false);
+    startTimer();
+  };
+
+  next?.addEventListener('click', () => {
+    nextProduct();
+    startTimer();
+  });
+
+  prev?.addEventListener('click', () => {
+    previousProduct();
+    startTimer();
+  });
+
+  slideshow.addEventListener('mouseenter', () => {
+    if (timer) clearInterval(timer);
+  });
+  slideshow.addEventListener('mouseleave', startTimer);
+
+  loadProducts();
+})();
