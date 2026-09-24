@@ -187,14 +187,6 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   };
 
   const resetProgress = () => {
-    if (progressTimer) clearInterval(progressTimer);
-    const started = performance.now();
-    progress.style.width = '0%';
-    progressTimer = setInterval(() => {
-      const percent = Math.min(100, ((performance.now() - started) / 10000) * 100);
-      progress.style.width = percent + '%';
-      if (percent >= 100) clearInterval(progressTimer);
-    }, 100);
   };
 
   const showProduct = (product, animate = true) => {
@@ -206,7 +198,6 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
       name.textContent = product.name;
       category.textContent = product.category;
       counter.textContent = (position + 1) + ' / ' + products.length;
-      resetProgress();
     };
 
     if (animate) {
