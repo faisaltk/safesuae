@@ -98,44 +98,55 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   render();
 });
 
-/* Automatically use imported product images */
+/* Product thumbnail/image loader */
 (function loadImportedProductImages() {
-  const imageFor = (slug) => '/products/images/' + slug + '.webp';
+  // Build the image URL from the live site's origin so this works on safesuae.com
+  // and does not depend on the folder the current HTML page lives in.
+  const siteRoot = window.location.origin;
+  const imageUrl = (slug) => siteRoot + '/products/images/' + encodeURIComponent(slug) + '.webp';
+
+  const attachImage = (box, slug, alt, eager = false) => {
+    if (!box || !slug) return;
+
+    const img = new Image();
+    img.alt = alt || 'Product image';
+    img.decoding = 'async';
+    img.loading = eager ? 'eager' : 'lazy';
+    img.className = 'catalogue-product-img';
+
+    const show = () => {
+      box.classList.remove('image-placeholder');
+      box.innerHTML = '';
+      box.appendChild(img);
+    };
+
+    img.addEventListener('load', show, { once: true });
+    img.addEventListener('error', () => {
+      // Keep the designed placeholder if an image is genuinely unavailable.
+      box.classList.add('image-placeholder');
+    }, { once: true });
+
+    img.src = imageUrl(slug);
+  };
 
   document.querySelectorAll('.product-card').forEach(card => {
     const link = card.querySelector('a.view-btn[href*="product="]');
     const box = card.querySelector('.product-image');
     if (!link || !box) return;
 
-    const match = link.href.match(/[?&]product=([^&#]+)/);
+    const match = link.getAttribute('href')?.match(/[?&]product=([^&#]+)/);
     if (!match) return;
 
     const slug = decodeURIComponent(match[1]);
-    const img = new Image();
-    img.alt = card.querySelector('h2')?.textContent?.trim() || 'Product image';
-    img.loading = 'lazy';
-    img.src = imageFor(slug);
-    img.onload = () => {
-      box.classList.remove('image-placeholder');
-      box.innerHTML = '';
-      box.appendChild(img);
-    };
+    const title = card.querySelector('h2, h3')?.textContent?.trim() || 'Product image';
+    attachImage(box, slug, title, false);
   });
 
   const detailName = document.getElementById('name');
   const detailBox = document.querySelector('.product-gallery .gallery-main');
-  const key = new URLSearchParams(location.search).get('product');
+  const key = new URLSearchParams(window.location.search).get('product');
 
   if (detailName && detailBox && key) {
-    const img = new Image();
-    img.alt = detailName.textContent.trim() + ' product image';
-    img.loading = 'eager';
-    img.src = imageFor(key);
-    img.onload = () => {
-      detailBox.classList.remove('image-placeholder');
-      detailBox.innerHTML = '';
-      detailBox.appendChild(img);
-    };
+    attachImage(detailBox, key, detailName.textContent.trim() + ' product image', true);
   }
 })();
-
