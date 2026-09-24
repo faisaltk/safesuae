@@ -1,7 +1,12 @@
-name: Import permitted SafeOne product images
+name: Build missing SafeOne product image ZIP
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "tools/import_safeone_images.py"
+      - "tools/missing_image_slugs.txt"
+      - ".github/workflows/import-safeone-images.yml"
 
 permissions:
   contents: write
@@ -24,6 +29,42 @@ jobs:
       - name: Download permitted product images
         run: python tools/import_safeone_images.py
 
+      - name: Build requested ZIP
+        shell: bash
+        run: |
+          set -e
+          rm -rf missing-product-images
+          mkdir -p missing-product-images
+          missing=0
+          while IFS= read -r slug; do
+            [ -z "$slug" ] && continue
+            if [ -f "products/images/$slug.webp" ]; then
+              cp "products/images/$slug.webp" "missing-product-images/$slug.webp"
+            else
+              echo "MISSING: $slug"
+              missing=$((missing + 1))
+            fi
+          done < tools/missing_image_slugs.txt
+
+          echo "Found $(find missing-product-images -type f | wc -l) of $(grep -cve '^$' tools/missing_image_slugs.txt) requested images."
+
+          if [ "$missing" -gt 0 ]; then
+            echo "$missing requested image(s) could not be downloaded."
+            exit 1
+          fi
+
+          cd missing-product-images
+          zip -9 -r ../SafeOne-missing-product-images.zip . >/dev/null
+          cd ..
+          ls -lh SafeOne-missing-product-images.zip
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SafeOne-missing-product-images
+          path: SafeOne-missing-product-images.zip
+          if-no-files-found: error
+
       - name: Commit downloaded images
         run: |
           git config user.name "github-actions[bot]"
@@ -32,6 +73,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No new images to commit."
           else
-            git commit -m "Add permitted SafeOne product images"
+            git commit -m "Add requested SafeOne product images"
             git push
           fi
