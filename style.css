@@ -379,22 +379,6 @@ footer a{color:#fff}
   letter-spacing:.12em;
   color:#dbeaf3;
 }
-.slideshow-progress{
-  position:absolute;
-  z-index:3;
-  left:0;
-  right:0;
-  bottom:0;
-  height:4px;
-  background:rgba(255,255,255,.2);
-}
-#slideshowProgress{
-  display:block;
-  width:0;
-  height:100%;
-  background:#fff;
-  transition:width .1s linear;
-}
 .slideshow-controls{
   display:flex;
   align-items:center;
