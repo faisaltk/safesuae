@@ -419,3 +419,12 @@ footer a{color:#fff}
   .slideshow-image-wrap{height:360px}
   #slideshowImage{padding:18px}
 }
+
+.ziyabee-credit {
+  text-align: center;
+  font-size: 7px;
+  line-height: 1;
+  opacity: 0.35;
+  letter-spacing: 1px;
+  padding: 2px 0 4px;
+}
