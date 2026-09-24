@@ -157,12 +157,21 @@
       <div><span class="section-tag">GALLERY</span><h2>Our Products</h2></div>
       <p>Product photos and catalogue items can be added here as the range grows.</p>
     </div>
-    <div class="gallery-grid">
-      <div class="gallery-item large"><span>PRODUCT IMAGE</span></div>
-      <div class="gallery-item"><span>PRODUCT IMAGE</span></div>
-      <div class="gallery-item"><span>PRODUCT IMAGE</span></div>
-      <div class="gallery-item"><span>PRODUCT IMAGE</span></div>
-      <div class="gallery-item"><span>PRODUCT IMAGE</span></div>
+    <div class="product-slideshow" id="productSlideshow" aria-label="Product gallery">
+      <div class="slideshow-image-wrap">
+        <img id="slideshowImage" src="" alt="ZEN GROUP product">
+        <div class="slideshow-overlay">
+          <span class="section-tag">FEATURED PRODUCT</span>
+          <h3 id="slideshowName">Loading products...</h3>
+          <span id="slideshowCategory">Please wait</span>
+        </div>
+        <div class="slideshow-progress" aria-hidden="true"><span id="slideshowProgress"></span></div>
+      </div>
+      <div class="slideshow-controls">
+        <button type="button" id="slideshowPrev" aria-label="Previous product">←</button>
+        <span id="slideshowCounter">1 / 97</span>
+        <button type="button" id="slideshowNext" aria-label="Next product">→</button>
+      </div>
     </div>
   </div>
 </section>
