@@ -130,31 +130,4 @@ const backUrl=fromOffice?'https://safesuae.com/products/office/index.html':'http
 wa.href=waUrl;
 back.href=backUrl;
 back.onclick=function(e){e.preventDefault();window.location.assign(backUrl);};
-})();
-<script>
-(function(){
-  const slug=new URLSearchParams(location.search).get('product');
-  if(slug!=='godrej-dataline-90l') return;
-  const description=document.getElementById('description');
-  if(description) description.textContent='Godrej Dataline 90L is a secure data and media storage safe designed to protect important records, magnetic media and sensitive business information.';
-  const details=document.getElementById('details');
-  if(details) details.innerHTML=[
-    'Designed for protection of sensitive data, records and media.',
-    'Provides protection against fire, dust, pilferage, humidity and unauthorized access.',
-    'Suitable for offices, businesses and record-storage environments.',
-    'Model: Godrej Dataline 90L.',
-    '<strong>Product:</strong> Godrej Dataline 90L',
-    '<strong>Category:</strong> DATA & MEDIA'
-  ].map(x=>'<li>'+x+'</li>').join('');
-  const box=document.getElementById('specifications');
-  if(box) box.innerHTML=[
-    ['External dimensions','798 × 655 × 676 mm'],
-    ['Internal dimensions','500 × 405 × 450 mm'],
-    ['Weight','215 kg'],
-    ['Capacity','91.13 L'],
-    ['Lock type','Two 10-lever high-security cylindrical locks'],
-    ['Fire protection','1 hour'],
-    ['Storage','Trays or lockable drawers available on request']
-  ].map(r=>'<div class="spec-row"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div>').join('');
-})();
-</script></script></body></html>
+})();</script></body></html>
