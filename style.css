@@ -29,7 +29,8 @@ img{max-width:100%;display:block}
 .nav-whatsapp{padding:11px 17px;border-radius:10px;background:var(--blue);color:#fff;font-size:13px;font-weight:700}
 .menu-toggle{display:none;background:none;border:0;font-size:25px;margin-left:auto}
 
-.hero{min-height:650px;position:relative;background:linear-gradient(135deg,#092f50 0%,#1769aa 55%,#8fb7cf 100%);display:flex;align-items:center}
+.hero{min-height:650px;position:relative;background-image:url('images/hero-safe-collage.jpg');background-size:cover;background-position:center;display:flex;align-items:center}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.58) 12%,rgba(0,0,0,0) 30%)}
 .hero:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 28%,rgba(255,255,255,.18),transparent 30%)}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,25,43,.82),rgba(7,45,76,.34),rgba(7,45,76,.08))}
 .hero-content{position:relative;z-index:1;color:#fff;padding:80px 0;max-width:760px}
