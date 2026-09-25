@@ -61,6 +61,7 @@ document.getElementById('category').textContent=p.category;
 document.getElementById('imageCategory').textContent=p.category;
 document.getElementById('description').textContent=info.d;
 document.getElementById('details').innerHTML=info.i.map(x=>'<li>'+x+'</li>').join('')+'<li><strong>Product:</strong> '+p.name+'</li><li><strong>Category:</strong> '+p.category+'</li>';
+renderSpecifications(p);
 const wa=document.getElementById('whatsapp');
 const back=document.getElementById('back');
 const waUrl='https://api.whatsapp.com/send/?phone=971559912945&text&type=phone_number&app_absent=0';
