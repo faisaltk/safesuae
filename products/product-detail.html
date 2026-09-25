@@ -130,4 +130,15 @@ const backUrl=fromOffice?'https://safesuae.com/products/office/index.html':'http
 wa.href=waUrl;
 back.href=backUrl;
 back.onclick=function(e){e.preventDefault();window.location.assign(backUrl);};
-})();</script></body></html>
+})();</script><script>
+(function(){
+  const slug=new URLSearchParams(location.search).get('product');
+  const heading=document.getElementById('name');
+  if(!slug||!heading)return;
+  fetch(location.pathname).then(r=>r.text()).then(html=>{
+    const re=new RegExp('\\{"slug":"'+slug+'","name":"([^"]+)","category":"([^"]+)"\\}');
+    const m=html.match(re);
+    if(m) heading.textContent=m[1];
+  }).catch(()=>{});
+})();
+</script></body></html>
