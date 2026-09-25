@@ -26,6 +26,33 @@ if(p.category==='MEDIUM')return{d:p.name+' is a medium-capacity security safe de
 if(p.category==='LARGE COMMERCIAL')return{d:p.name+' is a large-capacity security safe designed for commercial environments that need substantial protected storage for documents, valuables and business assets.',i:['Designed for larger commercial storage requirements.','Suitable for offices, businesses and commercial premises.','Provides organized protected storage for important items.','Model: '+p.name+'.']};
 return{d:p.name+' is a professional product designed to support secure, organized and efficient business operations.',i:['Designed for professional use.','Suitable for office and commercial environments.','Practical solution for everyday business requirements.','Product: '+p.name+'.']};
 }
+const specificationData={
+'eagle-es-035':{dimensions:'616 × 491 × 467 mm',internal:'389 × 338 × 304 mm',weight:'96 kg',capacity:'40 L',lock:'Electronic + key lock',fire:'1 hour',storage:'1 drawer + 1 shelf'},
+'eagle-ss-035':{dimensions:'616 × 491 × 467 mm',internal:'389 × 338 × 304 mm',weight:'96 kg',capacity:'40 L',lock:'2 key locks',fire:'1 hour',storage:'1 drawer + 1 shelf'},
+'eagle-es-065':{dimensions:'743 × 549 × 507 mm',internal:'519 × 398 × 346 mm',weight:'120 kg',capacity:'71 L',lock:'Electronic + key lock',fire:'1 hour',storage:'1 drawer + 1 shelf'},
+'eagle-es-080':{dimensions:'865 × 580 × 507 mm',internal:'638 × 426 × 346 mm',weight:'165 kg',capacity:'94 L',lock:'Electronic + key lock',fire:'1 hour',storage:'1 drawer + 1 shelf'},
+'eagle-es-100':{dimensions:'1066 × 585 × 507 mm',internal:'833 × 426 × 346 mm',weight:'200 kg',capacity:'123 L',lock:'Electronic + key lock',fire:'1 hour',storage:'1 drawer + 2 shelves'},
+'eagle-es-150':{dimensions:'1245 × 642 × 630 mm',internal:'1012 × 426 × 346 mm',weight:'295 kg',lock:'Electronic + key lock',storage:'2 shelves'}
+};
+function renderSpecifications(product){
+ const box=document.getElementById('specifications');
+ if(!box)return;
+ const s=specificationData[product.slug];
+ const rows=s?[
+  ['External dimensions',s.dimensions],['Internal dimensions',s.internal],['Weight',s.weight],
+  ['Capacity',s.capacity||'Not listed'],['Lock type',s.lock||'Not listed'],
+  ['Fire rating',s.fire||'Not listed'],['Storage',s.storage||'Not listed']
+ ]:[
+  ['External dimensions','Contact us for exact dimensions'],
+  ['Internal dimensions','Contact us for exact dimensions'],
+  ['Weight','Contact us for exact weight'],
+  ['Capacity','Contact us for exact capacity'],
+  ['Lock type','See product description'],
+  ['Fire rating','See product description'],
+  ['Storage','See product description']
+ ];
+ box.innerHTML=rows.map(r=>'<div class="spec-row"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div>').join('');
+}
 const info=makeDetails(p);
 document.title=p.name+' | ZEN GROUP FZE';
 document.getElementById('crumb').textContent=p.name;
