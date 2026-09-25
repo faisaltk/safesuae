@@ -129,27 +129,42 @@ def product_urls() -> dict[str, str]:
     return products
 
 
-def score_candidate(name: str, slug: str, label: str) -> float:
+def score_candidate(name: str, slug: str, url: str, label: str) -> float:
     target = norm(name)
     target_slug = norm(slug)
-    url_part = norm(slug.rsplit("/", 1)[-1])
+    url_part = norm(urlparse(url).path.rsplit("/", 1)[-1])
     label_norm = norm(label)
 
     score = 0.0
 
-    if target and target in label_norm:
-        score += 100.0
-    if target_slug and target_slug in url_part:
-        score += 100.0
+    # Exact product-name matches are the strongest signal.
+    if target and target == label_norm:
+        score += 500.0
+    elif target and target in label_norm:
+        score += 250.0
 
-    score += 60.0 * SequenceMatcher(None, target, label_norm).ratio()
-    score += 60.0 * SequenceMatcher(None, target_slug, url_part).ratio()
+    # Match the actual SafeOne URL slug, not the local website slug.
+    score += 100.0 * SequenceMatcher(None, target_slug, url_part).ratio()
 
-    # Reward model-number matches such as 015K, FR20H, 100M, A43, etc.
+    # Model tokens are important for variants such as EL/KL, A43/A59, etc.
     model_tokens = re.findall(r"[a-z]*\d+[a-z]*", name.lower())
+    matched_tokens = 0
     for token in model_tokens:
-        if norm(token) in url_part or norm(token) in label_norm:
-            score += 25.0
+        token_norm = norm(token)
+        if token_norm and (token_norm in url_part or token_norm in label_norm):
+            matched_tokens += 1
+            score += 80.0
+
+    # Brand/model labels should agree with the target.
+    brand = name.split()[0].lower()
+    if norm(brand) and norm(brand) in url_part:
+        score += 30.0
+
+    score += 40.0 * SequenceMatcher(None, target, label_norm).ratio()
+
+    # Penalize candidates that do not contain the distinctive model tokens.
+    if model_tokens and matched_tokens == 0:
+        score -= 250.0
 
     return score
 
@@ -157,7 +172,7 @@ def score_candidate(name: str, slug: str, label: str) -> float:
 def find_url(name: str, slug: str, products: dict[str, str]) -> str | None:
     ranked = sorted(
         (
-            (score_candidate(name, slug, label), url)
+            (score_candidate(name, slug, url, label), url)
             for url, label in products.items()
         ),
         reverse=True,
@@ -167,7 +182,7 @@ def find_url(name: str, slug: str, products: dict[str, str]) -> str | None:
         return None
 
     score, url = ranked[0]
-    if score < 55:
+    if score < 100:
         return None
 
     return url
@@ -190,6 +205,7 @@ def main() -> int:
     downloaded = skipped = missing = 0
 
     for slug, name in targets.items():
+        # Refresh existing imported images so incorrect duplicate matches are repaired.
         if slug in SKIP and (IMAGE_DIR / "ES-100.webp").exists():
             print(f"SKIP existing image: {name}")
             skipped += 1
