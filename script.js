@@ -165,6 +165,10 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   const next = document.getElementById('slideshowNext');
 
   const imageUrl = (slug) => '/products/images/' + encodeURIComponent(slug) + '.webp';
+  const imageFallbackUrl = (slug) => {
+    if (slug === 'eagle-es-100') return '/products/images/ES-100.webp';
+    return '';
+  };
   const productUrl = (slug) => '/products/product-detail.html?product=' + encodeURIComponent(slug);
   const fallbackProducts = [
     {slug:'eagle-es-100',name:'Eagle ES-100',category:'LARGE COMMERCIAL'}
@@ -211,6 +215,12 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
     if (!product) return;
 
     const apply = () => {
+      image.onerror = () => {
+        const fallback = imageFallbackUrl(product.slug);
+        if (fallback && image.src !== new URL(fallback, window.location.href).href) {
+          image.src = fallback;
+        }
+      };
       image.src = imageUrl(product.slug);
       image.alt = product.name + ' product image';
       name.textContent = product.name;
