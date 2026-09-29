@@ -160,37 +160,22 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   const image = document.getElementById('slideshowImage');
   const name = document.getElementById('slideshowName');
   const category = document.getElementById('slideshowCategory');
-  const progress = document.getElementById('slideshowProgress');
   const prev = document.getElementById('slideshowPrev');
   const next = document.getElementById('slideshowNext');
+  if (!image || !name || !category) return;
 
-  const imageUrl = (slug) => '/products/images/' + encodeURIComponent(slug) + '.webp';
-  const imageFallbackUrl = (slug) => {
-    if (slug === 'eagle-es-100') return '/products/images/ES-100.webp';
-    return '';
-  };
-  const productUrl = (slug) => '/products/product-detail.html?product=' + encodeURIComponent(slug);
-  const fallbackProducts = [
-    {slug:'eagle-es-100',name:'Eagle ES-100',category:'LARGE COMMERCIAL'}
-  ];
+  const productUrl = slug => '/products/product-detail.html?product=' + encodeURIComponent(slug);
+  const fallbackProducts = [{slug:'eagle-es-100',name:'Eagle ES-100',category:'LARGE COMMERCIAL',image:'/products/images/ES-100.webp'}];
 
-  let products = [];
-  let order = [];
-  let position = 0;
-  let timer = null;
-  let progressTimer = null;
-  let busy = false;
+  let products = [], order = [], position = 0, timer = null, busy = false;
 
-  const shuffle = (items) => {
-    const result = [...items];
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+  const shuffle = items => {
+    const result=[...items];
+    for(let i=result.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [result[i],result[j]]=[result[j],result[i]];
     }
     return result;
-  };
-
-  const resetProgress = () => {
   };
 
   image.setAttribute('role','link');
@@ -198,113 +183,80 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   image.setAttribute('title','View product');
   image.style.cursor='pointer';
 
-  const openCurrentProduct = () => {
-    const product = order[position];
-    if (product?.slug) window.location.href = productUrl(product.slug);
+  const openCurrentProduct=()=>{
+    const product=order[position];
+    if(product?.slug) window.location.href=productUrl(product.slug);
   };
-
-  image.addEventListener('click', openCurrentProduct);
-  image.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openCurrentProduct();
-    }
+  image.addEventListener('click',openCurrentProduct);
+  image.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openCurrentProduct();}
   });
 
-  const showProduct = (product, animate = true) => {
-    if (!product) return;
-
-    const apply = () => {
-      image.onerror = () => {
-        const fallback = imageFallbackUrl(product.slug);
-        if (fallback && image.src !== new URL(fallback, window.location.href).href) {
-          image.src = fallback;
+  const showProduct=(product,animate=true)=>{
+    if(!product)return;
+    const apply=()=>{
+      image.onerror=()=>{
+        if(product.slug==='eagle-es-100' && image.src.indexOf('/ES-100.webp')===-1){
+          image.src='/products/images/ES-100.webp';
         }
       };
-      image.src = imageUrl(product.slug);
-      image.alt = product.name + ' product image';
-      name.textContent = product.name;
-      category.textContent = product.category;
+      image.src=product.image||('/products/images/'+encodeURIComponent(product.slug)+'.webp');
+      image.alt=product.name+' product image';
+      name.textContent=product.name;
+      category.textContent=product.category;
     };
-
-    if (animate) {
+    if(animate){
       slideshow.classList.remove('is-visible');
-      setTimeout(() => {
-        apply();
-        slideshow.classList.add('is-visible');
-      }, 180);
-    } else {
+      setTimeout(()=>{apply();slideshow.classList.add('is-visible');},180);
+    }else{
       apply();
       slideshow.classList.add('is-visible');
     }
   };
 
-  const nextProduct = () => {
-    if (!products.length || busy) return;
-    busy = true;
+  const nextProduct=()=>{
+    if(!products.length||busy)return;
+    busy=true;
     position++;
-    if (position >= order.length) {
-      order = shuffle(products);
-      position = 0;
-    }
+    if(position>=order.length){order=shuffle(products);position=0;}
     showProduct(order[position]);
-    setTimeout(() => { busy = false; }, 220);
+    setTimeout(()=>busy=false,220);
   };
 
-  const previousProduct = () => {
-    if (!products.length || busy) return;
-    busy = true;
+  const previousProduct=()=>{
+    if(!products.length||busy)return;
+    busy=true;
     position--;
-    if (position < 0) {
-      position = order.length - 1;
-    }
+    if(position<0)position=order.length-1;
     showProduct(order[position]);
-    setTimeout(() => { busy = false; }, 220);
+    setTimeout(()=>busy=false,220);
   };
 
-  const startTimer = () => {
-    if (timer) clearInterval(timer);
-    timer = setInterval(nextProduct, 10000);
+  const startTimer=()=>{
+    if(timer)clearInterval(timer);
+    timer=setInterval(nextProduct,10000);
   };
 
-  const loadProducts = async () => {
-    try {
-      const response = await fetch('/products/product-detail.html', {cache:'no-store'});
-      if (!response.ok) throw new Error('Could not load product list');
-      const html = await response.text();
-      const matches = [...html.matchAll(/{"slug":"([^"]+)","name":"([^"]+)","category":"([^"]+)"}/g)];
-      products = matches.map(match => ({
-        slug: match[1],
-        name: match[2],
-        category: match[3]
-      }));
-
-      if (!products.length) throw new Error('No products found');
-    } catch (error) {
-      console.warn('Product slideshow could not load the catalogue.', error);
-      products = fallbackProducts;
+  const loadProducts=async()=>{
+    try{
+      const response=await fetch('/products/products.json',{cache:'no-store'});
+      if(!response.ok)throw new Error('Could not load product data');
+      const data=await response.json();
+      products=Array.isArray(data)?data:(data.products||[]);
+      if(!products.length)throw new Error('No products found');
+    }catch(error){
+      console.warn('Product slideshow could not load the catalogue.',error);
+      products=fallbackProducts;
     }
-
-    order = shuffle(products);
-    position = 0;
-    showProduct(order[position], false);
+    order=shuffle(products);
+    position=0;
+    showProduct(order[position],false);
     startTimer();
   };
 
-  next?.addEventListener('click', () => {
-    nextProduct();
-    startTimer();
-  });
-
-  prev?.addEventListener('click', () => {
-    previousProduct();
-    startTimer();
-  });
-
-  slideshow.addEventListener('mouseenter', () => {
-    if (timer) clearInterval(timer);
-  });
-  slideshow.addEventListener('mouseleave', startTimer);
-
+  next?.addEventListener('click',()=>{nextProduct();startTimer();});
+  prev?.addEventListener('click',()=>{previousProduct();startTimer();});
+  slideshow.addEventListener('mouseenter',()=>{if(timer)clearInterval(timer);});
+  slideshow.addEventListener('mouseleave',startTimer);
   loadProducts();
 })();
