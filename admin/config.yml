@@ -1,0 +1,78 @@
+backend:
+  name: turbo-github
+  turbo_site_id: REPLACE_WITH_TURBO_SITE_ID
+  branch: main
+
+media_folder: "products/images"
+public_folder: "/products/images"
+
+collections:
+  - name: "products"
+    label: "Products"
+    files:
+      - label: "Product Catalogue"
+        name: "catalogue"
+        file: "products/products.json"
+        format: "json"
+        fields:
+          - label: "Products"
+            name: "products"
+            widget: "list"
+            allow_add: true
+            allow_remove: true
+            allow_reorder: true
+            collapsed: true
+            summary: "{{fields.name}} — {{fields.category}}"
+            fields:
+              - label: "Product Name"
+                name: "name"
+                widget: "string"
+              - label: "Slug"
+                name: "slug"
+                widget: "string"
+                hint: "Use lowercase letters, numbers and hyphens. Keep this unchanged when editing an existing product."
+              - label: "Category"
+                name: "category"
+                widget: "select"
+                options:
+                  - "SMALL / HOME & OFFICE"
+                  - "MEDIUM"
+                  - "LARGE COMMERCIAL"
+                  - "DATA & MEDIA"
+                  - "DEPOSIT / LOCKERS"
+                  - "VAULT DOORS"
+                  - "LUXURY INTERIOR"
+                  - "FIRE & BURGLARY"
+                  - "GRADE 1"
+                  - "EIKO"
+                  - "CASH COUNTING"
+                  - "SHREDDERS"
+                  - "BINDING"
+                  - "LAMINATION"
+                  - "STORAGE"
+              - label: "Product Image"
+                name: "image"
+                widget: "image"
+                choose_url: true
+              - label: "Description"
+                name: "description"
+                widget: "text"
+              - label: "Details"
+                name: "details"
+                widget: "list"
+                field:
+                  label: "Detail"
+                  name: "detail"
+                  widget: "string"
+              - label: "Specifications"
+                name: "specifications"
+                widget: "object"
+                collapsed: true
+                fields:
+                  - { label: "External dimensions", name: "dimensions", widget: "string", required: false }
+                  - { label: "Internal dimensions", name: "internal", widget: "string", required: false }
+                  - { label: "Weight", name: "weight", widget: "string", required: false }
+                  - { label: "Capacity", name: "capacity", widget: "string", required: false }
+                  - { label: "Lock type", name: "lock", widget: "string", required: false }
+                  - { label: "Fire rating", name: "fire", widget: "string", required: false }
+                  - { label: "Storage", name: "storage", widget: "string", required: false }
