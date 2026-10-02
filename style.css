@@ -492,3 +492,18 @@ footer a{color:#fff}
   .catalogue-grid{grid-template-columns:1fr}
   .catalogue-card .product-image{height:210px}
 }
+
+
+/* Smaller product photos inside catalogue cards */
+.catalogue-grid .catalogue-card .product-image{
+  height:180px;
+}
+.catalogue-grid .catalogue-card .product-image>img{
+  width:72%;
+  height:72%;
+  max-width:72%;
+  max-height:72%;
+  object-fit:contain;
+  padding:0;
+  margin:auto;
+}
