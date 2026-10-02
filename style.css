@@ -507,3 +507,17 @@ footer a{color:#fff}
   padding:0;
   margin:auto;
 }
+
+
+/* Keep the three main product categories in one row */
+.home-category-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+.home-category{
+  min-height:260px;
+  padding:26px;
+}
+@media(max-width:850px){
+  .home-category-grid{grid-template-columns:1fr;}
+}
