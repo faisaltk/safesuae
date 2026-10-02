@@ -487,3 +487,9 @@ footer a{color:#fff}
 .brand-logo-card span{font-size:18px;font-weight:800;letter-spacing:.08em;color:#334e68;text-align:center}
 @media(max-width:900px){.brands-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.brands-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.brand-logo-card{height:100px;padding:14px}.brand-logo-card img{max-height:58px}.brand-logo-card span{font-size:14px}}
+
+/* Brand section visibility fix */
+.brands-section{display:block!important;visibility:visible!important;opacity:1!important}
+.brands-section .brands-grid{display:grid!important;visibility:visible!important;opacity:1!important}
+.brands-section .brand-logo-card{display:flex!important;visibility:visible!important;opacity:1!important;min-height:118px}
+.brands-section .brand-wordmark{display:block!important;color:#0b3d66!important;font-size:18px!important;font-weight:800!important;letter-spacing:.08em!important;text-align:center!important}
