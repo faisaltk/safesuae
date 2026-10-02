@@ -478,3 +478,12 @@ footer a{color:#fff}
 
 /* Brand filters */
 .brand-filter{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:4px 0}.brand-filter-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;transition:.2s}.brand-filter-btn:hover{border-color:#9fc6df;transform:translateY(-1px)}.brand-filter-btn.active{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;box-shadow:0 8px 22px rgba(11,61,102,.16)}.brand-mark{font-size:11px;font-weight:800;letter-spacing:.08em;white-space:nowrap}@media(max-width:600px){.brand-filter{gap:7px}.brand-filter-btn{padding:8px 10px}.brand-mark{font-size:10px}}
+
+/* Homepage brand logo cards */
+.brands-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:28px}
+.brand-logo-card{height:118px;background:#fff;border:1px solid var(--line);border-radius:16px;display:flex;align-items:center;justify-content:center;padding:18px;box-shadow:0 8px 24px rgba(11,61,102,.06);transition:.2s}
+.brand-logo-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(11,61,102,.1)}
+.brand-logo-card img{display:block;max-width:100%;max-height:72px;width:auto;height:auto;object-fit:contain}
+.brand-logo-card span{font-size:18px;font-weight:800;letter-spacing:.08em;color:#334e68;text-align:center}
+@media(max-width:900px){.brands-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.brands-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.brand-logo-card{height:100px;padding:14px}.brand-logo-card img{max-height:58px}.brand-logo-card span{font-size:14px}}
