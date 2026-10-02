@@ -19,6 +19,7 @@
 <section class="section"><div class="container">
 <div class="catalogue-toolbar"><div><span class="section-tag">CATALOGUE</span><h2>Products</h2></div>
 <div class="search-box"><span>⌕</span><input id="catalogueSearch" type="search" placeholder="Search products..."></div></div>
+<div class="brand-filter" id="brandFilter"><button type="button" class="brand-filter-btn active" data-brand="ALL"><span class="brand-mark">ALL</span></button><button type="button" class="brand-filter-btn" data-brand="HITECH"><span class="brand-mark">HITECH</span></button><button type="button" class="brand-filter-btn" data-brand="CASSIDA"><span class="brand-mark">CASSIDA</span></button><button type="button" class="brand-filter-btn" data-brand="RIBAO"><span class="brand-mark">RIBAO</span></button><button type="button" class="brand-filter-btn" data-brand="FELLOWES"><span class="brand-mark">FELLOWES</span></button><button type="button" class="brand-filter-btn" data-brand="NEW UNITED"><span class="brand-mark">NEW UNITED</span></button></div>
 <div class="catalogue-grid" id="catalogueGrid"></div><p id="noResults" class="no-results">No products match your search.</p>
 </div></section>
 </main>
@@ -31,6 +32,7 @@
   if(!response.ok)return;
   const data=await response.json();
   const products=(data.products||[]).filter(p=>categories.includes(p.category));
+  const brandOf=p=>{const n=p.name.toUpperCase();if(n.startsWith('HITECH'))return 'HITECH';if(n.startsWith('CASSIDA'))return 'CASSIDA';if(n.startsWith('RIBAO'))return 'RIBAO';if(n.startsWith('FELLOWES'))return 'FELLOWES';if(n.startsWith('NEW UNITED'))return 'NEW UNITED';return 'OTHER';};
   const grid=document.getElementById('catalogueGrid');
   const noResults=document.getElementById('noResults');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -40,11 +42,21 @@
     img.addEventListener('error',()=>{img.style.display='none';});
   });
   const search=document.getElementById('catalogueSearch');
+  let activeBrand='ALL';
   const filter=()=>{
     const q=search.value.toLowerCase().trim();let shown=0;
-    grid.querySelectorAll('.product-card').forEach(card=>{const ok=card.dataset.search.includes(q);card.style.display=ok?'':'none';if(ok)shown++;});
+    grid.querySelectorAll('.product-card').forEach((card,i)=>{
+      const p=products[i];
+      const ok=card.dataset.search.includes(q)&&(activeBrand==='ALL'||brandOf(p)===activeBrand);
+      card.style.display=ok?'':'none';if(ok)shown++;
+    });
     noResults.style.display=shown?'none':'block';
   };
+  document.querySelectorAll('.brand-filter-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    activeBrand=btn.dataset.brand;
+    document.querySelectorAll('.brand-filter-btn').forEach(b=>b.classList.toggle('active',b===btn));
+    filter();
+  }));
   search.addEventListener('input',filter);filter();
 })();
 </script>
