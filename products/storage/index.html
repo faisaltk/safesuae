@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Storage Solutions | ZEN GROUP FZE</title><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="header" id="top"><div class="container nav-wrap">
+<a href="../../index.html" class="brand"><img src="../../logo.jpg" alt="ZEN GROUP FZE logo" class="logo"><span>ZEN GROUP</span></a>
+<button class="menu-toggle" aria-label="Open menu">☰</button>
+<nav class="nav"><a href="../../index.html#home">Home</a><a href="../../index.html#about">About</a><a href="../../index.html#services">Services</a><a href="../../index.html#products">Products</a><a href="../../index.html#gallery">Gallery</a><a href="../../index.html#pricing">Pricing</a><a href="../../index.html#contact">Contact</a></nav>
+<a class="nav-whatsapp" href="https://wa.me/971559912945" target="_blank" rel="noopener">WhatsApp</a>
+</div></header>
+<main>
+<section class="catalogue-hero"><div class="container">
+<div class="breadcrumb"><a href="../../index.html">Home</a> / Products / Storage Solutions</div>
+<span class="section-tag">ZEN GROUP FZE • STORAGE SOLUTIONS</span><h1>Storage Solutions</h1><p>Browse practical storage products for offices and business environments.</p>
+</div></section>
+<section class="section"><div class="container">
+<div class="catalogue-toolbar"><div><span class="section-tag">CATALOGUE</span><h2>Storage Products</h2></div>
+<div class="search-box"><span>⌕</span><input id="catalogueSearch" type="search" placeholder="Search products..."></div></div>
+<div class="catalogue-grid" id="catalogueGrid"></div><p id="noResults" class="no-results">No storage products are available yet.</p>
+</div></section>
+</main>
+<footer><div class="container footer-wrap"><div class="brand footer-brand"><img src="../../logo.jpg" alt="ZEN GROUP FZE logo"><span>ZEN GROUP FZE</span></div><p>© <span id="year"></span> ZEN GROUP FZE. Physical Security • Office Equipment.</p><a href="../../index.html#products">← Categories</a></div></footer>
+<script src="../../script.js"></script>
+<script>
+(async function(){
+  const response=await fetch('../products.json',{cache:'no-store'});
+  if(!response.ok)return;
+  const data=await response.json();
+  const products=(data.products||[]).filter(p=>p.category==='STORAGE');
+  const grid=document.getElementById('catalogueGrid');
+  const noResults=document.getElementById('noResults');
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  grid.innerHTML=products.map(p=>'<article class="catalogue-card product-card" data-search="'+esc((p.name+' '+p.category+' '+p.description).toLowerCase())+'"><div class="product-image"><img src="'+esc(p.image||('/products/images/'+p.slug+'.webp'))+'" alt="'+esc(p.name)+' product image" loading="lazy" decoding="async"><div class="image-fallback"><span>PRODUCT IMAGE</span><small>'+esc(p.category)+'</small></div></div><div class="catalogue-card-body"><span class="section-tag">'+esc(p.category)+'</span><h2>'+esc(p.name)+'</h2><p>'+esc(p.description||'')+'</p><a class="view-btn" href="../product-detail.html?product='+encodeURIComponent(p.slug)+'">View Product →</a></div></article>').join('');
+  if(products.length) noResults.style.display='none';
+  grid.querySelectorAll('.product-image img').forEach(img=>{
+    img.addEventListener('load',()=>{img.nextElementSibling.style.display='none';});
+    img.addEventListener('error',()=>{img.style.display='none';});
+  });
+  const search=document.getElementById('catalogueSearch');
+  const filter=()=>{
+    const q=search.value.toLowerCase().trim();let shown=0;
+    grid.querySelectorAll('.product-card').forEach(card=>{const ok=card.dataset.search.includes(q);card.style.display=ok?'':'none';if(ok)shown++;});
+    noResults.style.display=shown?'none':'block';
+  };
+  search.addEventListener('input',filter);filter();
+})();
+</script>
+</body></html>
