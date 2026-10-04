@@ -7,17 +7,6 @@
 <title>ZEN GROUP FZE | Physical Security & Office Equipment</title>
 <link rel="stylesheet" href="style.css?v=brandfix3">
 
-<style>
-.hero-slideshow{position:relative;overflow:hidden}
-.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.03);transition:opacity 1s ease,transform 7s ease;z-index:0}
-.hero-slide.is-active{opacity:1;transform:scale(1)}
-.hero-slideshow .hero-gradient,.hero-slideshow .hero-overlay{z-index:1}
-.hero-slideshow .hero-content{position:relative;z-index:2}
-.hero-dots{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
-.hero-dot{width:9px;height:9px;border:1px solid rgba(255,255,255,.9);border-radius:50%;padding:0;background:rgba(255,255,255,.35);cursor:pointer}
-.hero-dot.is-active{background:#fff;transform:scale(1.25)}
-@media(max-width:600px){.hero-slide{background-position:center}.hero-dots{bottom:18px}}
-</style>
 </head>
 <body>
 
@@ -43,12 +32,7 @@
 
 <main>
 
-<section id="home" class="hero hero-slideshow">
-  <div class="hero-slide is-active" style="background-image:url('/products/images/eagle-es-035.webp');"></div>
-  <div class="hero-slide" style="background-image:url('/products/images/hitech-bc-175t.webp');"></div>
-  <div class="hero-slide" style="background-image:url('/products/images/filing-cabinets-key-lock.webp');"></div>
-  <div class="hero-slide" style="background-image:url('/products/images/fellowes-powershred-53c.webp');"></div>
-  <div class="hero-slide" style="background-image:url('/products/images/godrej-fr-720el.webp');"></div>
+<section id="home" class="hero" style="background-image:url('https://raw.githubusercontent.com/faisaltk/safesuae/main/images/a5ae45c1-69ec-45b2-b70d-2a42792b3c59.png?v=2');">
   <div class="hero-gradient"></div>
   <div class="hero-overlay"></div>
   <div class="container hero-content">
@@ -58,13 +42,6 @@
     <div class="hero-actions">
       <a href="#contact" class="btn secondary">Contact Us</a>
     </div>
-  </div>
-  <div class="hero-dots" aria-label="Hero slideshow controls">
-    <button type="button" class="hero-dot is-active" aria-label="Show slide 1"></button>
-    <button type="button" class="hero-dot" aria-label="Show slide 2"></button>
-    <button type="button" class="hero-dot" aria-label="Show slide 3"></button>
-    <button type="button" class="hero-dot" aria-label="Show slide 4"></button>
-    <button type="button" class="hero-dot" aria-label="Show slide 5"></button>
   </div>
 </section>
 
@@ -281,24 +258,6 @@
 </footer>
 
 
-<script>
-(function(){
-  const slides=[...document.querySelectorAll('.hero-slide')];
-  const dots=[...document.querySelectorAll('.hero-dot')];
-  if(!slides.length) return;
-  let current=0;
-  let timer;
-  function showSlide(index){
-    current=(index+slides.length)%slides.length;
-    slides.forEach((slide,i)=>slide.classList.toggle('is-active',i===current));
-    dots.forEach((dot,i)=>dot.classList.toggle('is-active',i===current));
-  }
-  function start(){ clearInterval(timer); timer=setInterval(()=>showSlide(current+1),6000); }
-  dots.forEach((dot,i)=>dot.addEventListener('click',()=>{showSlide(i);start();}));
-  showSlide(0);
-  start();
-})();
-</script>
 <script src="script.js"></script>
 </body>
 </html>
