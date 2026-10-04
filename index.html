@@ -7,6 +7,14 @@
 <title>ZEN GROUP FZE | Physical Security & Office Equipment</title>
 <link rel="stylesheet" href="style.css?v=brandfix3">
 
+<style>
+.hero-slideshow{position:relative;overflow:hidden}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.02);transition:opacity 1.2s ease,transform 7s ease;z-index:0}
+.hero-slide.is-active{opacity:1;transform:scale(1)}
+.hero-slideshow .hero-gradient,.hero-slideshow .hero-overlay{z-index:1}
+.hero-slideshow .hero-content{position:relative;z-index:2}
+@media(max-width:600px){.hero-slide{background-position:center}}
+</style>
 </head>
 <body>
 
@@ -32,7 +40,10 @@
 
 <main>
 
-<section id="home" class="hero" style="background-image:url('https://raw.githubusercontent.com/faisaltk/safesuae/main/images/a5ae45c1-69ec-45b2-b70d-2a42792b3c59.png?v=2');">
+<section id="home" class="hero hero-slideshow">
+  <div class="hero-slide is-active" style="background-image:url('https://raw.githubusercontent.com/faisaltk/safesuae/main/images/a5ae45c1-69ec-45b2-b70d-2a42792b3c59.png?v=2');"></div>
+  <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/faisaltk/safesuae/main/images/WhatsApp%20Image%202026-10-04%20at%2010.56.44%20PM.jpeg');"></div>
+  <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/faisaltk/safesuae/main/images/WhatsApp%20Image%202026-10-04%20at%2011.05.07%20PM.jpeg');"></div>
   <div class="hero-gradient"></div>
   <div class="hero-overlay"></div>
   <div class="container hero-content">
@@ -258,6 +269,18 @@
 </footer>
 
 
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.hero-slide')];
+  if(!slides.length) return;
+  let current=0;
+  setInterval(function(){
+    slides[current].classList.remove('is-active');
+    current=(current+1)%slides.length;
+    slides[current].classList.add('is-active');
+  },6000);
+})();
+</script>
 <script src="script.js"></script>
 </body>
 </html>
