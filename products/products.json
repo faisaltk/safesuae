@@ -1724,6 +1724,20 @@
         "Model: Customized Cabinets & Lockers."
       ],
       "specifications": {}
-    }
+    },
+    {
+      "name": " Hitachi iH-110 cash counting and sorting machine",
+      "slug": "iH-110 Series",
+      "category": "CASH COUNTING",
+      "image": "/products/images/bill-counter-hitachi-ih-110-mix-value-double-pocket-398358.webp",
+      "description": "The Hitachi iH-110 cash counting and sorting machine is designed for businesses that require accurate and efficient handling of banknotes. It supports mix-value counting and sorting across multiple currencies, making it suitable for banks, financial institutions, and high-volume cash environments in the UAE.",
+      "details": [
+        "Key Features Mix Value Counting – Counts and sorts mixed denominations Multi-Currency Support – Handles multiple currencies (model dependent) Dual Pocket Design – Separate stacker and reject pocket High-Speed Processing – Up to approx. 1300 notes per minute Advanced Detection System – Uses imaging and sensor-based verification Touchscreen Display – 4.3-inch interface for operation control Large Hopper Capacity – Supports bulk note feeding"
+      ],
+      "specifications": {
+        "dimensions": "Technical Specifications Counting Speed: Up to approx. 1300 notes/min (currency dependent) Sorting Speed: Up to approx. 1200 notes/min Hopper Capacity: Up to approx. 1000 notes Display: 4.3-inch touchscreen Detection Technology: Image processing, OCR, sensor-based detection Interfaces: LAN, USB, RS232 Weight: Approx. 13–14.5 kg Power Supply: Standard AC power"
+      }
+    },
+    {}
   ]
 }
