@@ -870,7 +870,7 @@
       "slug": "godrej-sentinel",
       "name": "Godrej Sentinel",
       "category": "VAULT DOORS",
-      "image": "/products/images/godrej-sentinel.webp",
+      "image": "/products/images/sentinel-door1.png",
       "description": "Godrej Sentinel is a high-security vault door designed to provide controlled access to protected storage areas and secure rooms.",
       "details": [
         "Designed for secure-room and vault access.",
@@ -1724,13 +1724,6 @@
         "Model: Customized Cabinets & Lockers."
       ],
       "specifications": {}
-    },
-    {
-      "name": "ss",
-      "slug": "ss",
-      "category": "LARGE COMMERCIAL",
-      "description": "ss",
-      "image": "/products/images/ES-100.webp"
     }
   ]
 }
