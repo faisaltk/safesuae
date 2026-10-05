@@ -27,7 +27,7 @@
 <script src="../../script.js"></script>
 <script>
 (async function(){
-  const categories=["CASH COUNTING","SHREDDERS","BINDING","LAMINATION","STORAGE"];
+  const categories=["CASH COUNTING","SHREDDERS","BINDING","LAMINATION"];
   const response=await fetch('../products.json',{cache:'no-store'});
   if(!response.ok)return;
   const data=await response.json();
