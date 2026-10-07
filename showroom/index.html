@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ZEN GROUP FZE showroom - explore security safes displayed like a premium product showroom.">
+<title>ZEN SHOWROOM | ZEN GROUP FZE</title>
+<link rel="icon" type="image/jpeg" href="../logo.jpg">
+<style>
+:root{
+  --ink:#11161c;
+  --muted:#68717b;
+  --line:#dfe4e8;
+  --panel:#f4f6f8;
+  --blue:#1769aa;
+  --blue2:#0d4f86;
+  --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#eef1f3;color:var(--ink);font-family:Inter,Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-wrap{max-width:1240px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.08em}
+.brand img{width:42px;height:42px;object-fit:contain;border-radius:8px}
+.nav{margin-left:auto;display:flex;gap:24px;font-size:13px;font-weight:700}
+.nav a{color:#4b555e}.nav a:hover{color:var(--blue)}
+.nav-cta{padding:10px 15px;border:1px solid #cbd4db;border-radius:999px;font-size:12px;font-weight:800}
+.container{max-width:1240px;margin:auto;padding:0 24px}
+.showroom-hero{min-height:52vh;display:grid;place-items:center;text-align:center;padding:80px 24px 60px;background:
+ radial-gradient(circle at 50% 20%,rgba(23,105,170,.15),transparent 35%),
+ linear-gradient(180deg,#ffffff 0%,#e8ecef 100%);position:relative;overflow:hidden}
+.showroom-hero:after{content:"";position:absolute;left:-10%;right:-10%;bottom:-55%;height:70%;background:radial-gradient(ellipse,rgba(0,0,0,.16),transparent 65%);pointer-events:none}
+.kicker{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--blue);margin-bottom:15px}
+h1{font-size:clamp(42px,7vw,86px);line-height:.94;letter-spacing:-.055em;margin:0 0 22px}
+.hero-copy{max-width:680px;margin:auto;color:#5d6670;font-size:17px;line-height:1.7}
+.showroom{padding:60px 0 100px}
+.showroom-top{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}
+.showroom-top h2{font-size:34px;letter-spacing:-.03em;margin:5px 0 0}
+.showroom-top p{max-width:520px;color:var(--muted);line-height:1.6;margin:0}
+.collection{position:relative}
+.viewport{overflow:hidden;border-radius:28px}
+.track{display:flex;transition:transform .65s cubic-bezier(.22,.8,.25,1);touch-action:pan-y}
+.page{min-width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;padding:22px 6px 34px}
+.product-card{position:relative;min-width:0;background:linear-gradient(180deg,#fff 0%,#f7f8f9 100%);border:1px solid #dce2e6;border-radius:24px;padding:18px 18px 24px;box-shadow:0 12px 30px rgba(20,29,37,.07);transition:transform .38s cubic-bezier(.2,.8,.2,1),box-shadow .38s ease,border-color .38s ease;cursor:pointer}
+.product-card:hover{transform:translateY(-18px) scale(1.025);box-shadow:0 30px 55px rgba(12,28,42,.19);border-color:#b8c9d5;z-index:5}
+.stage{height:350px;display:flex;align-items:flex-end;justify-content:center;position:relative;padding:20px 18px 28px}
+.stage:before{content:"";position:absolute;bottom:12px;left:10%;right:10%;height:34px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.24),transparent 68%);filter:blur(3px);transition:transform .38s ease,opacity .38s ease}
+.product-card:hover .stage:before{transform:scale(1.08);opacity:.75}
+.pedestal{position:absolute;bottom:24px;width:76%;height:25px;border-radius:50%;background:linear-gradient(180deg,#e8ecef,#c8ced3);box-shadow:0 8px 12px rgba(0,0,0,.12);border:1px solid #c1c8ce}
+.product-image{position:relative;z-index:2;width:82%;height:300px;object-fit:contain;filter:drop-shadow(0 18px 13px rgba(0,0,0,.15));transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .5s ease}
+.product-card:hover .product-image{transform:translateY(-10px) scale(1.055);filter:drop-shadow(0 28px 18px rgba(0,0,0,.21))}
+.product-meta{padding:0 7px}
+.product-brand{font-size:10px;letter-spacing:.18em;font-weight:800;color:var(--blue);margin-bottom:7px}
+.product-name{font-size:21px;font-weight:800;letter-spacing:-.025em;margin:0 0 8px}
+.product-category{font-size:12px;color:#727b83}
+.product-action{margin-top:18px;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--ink)}
+.product-card:hover .product-action{color:var(--blue)}
+.dots{display:flex;justify-content:center;align-items:center;gap:9px;margin-top:2px}
+.dot{width:8px;height:8px;border:0;border-radius:50%;background:#b9c1c8;padding:0;cursor:pointer;transition:all .25s ease}
+.dot.active{width:26px;border-radius:999px;background:var(--blue)}
+.counter{text-align:center;font-size:11px;letter-spacing:.14em;color:#7a838b;margin-top:13px}
+.empty{padding:80px;text-align:center;color:var(--muted)}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#53606b}
+@media(max-width:900px){
+  .nav{display:none}
+  .page{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stage{height:310px}.product-image{height:260px}
+}
+@media(max-width:620px){
+  .nav-wrap{padding:12px 16px}.container{padding:0 16px}
+  .nav-cta{display:none}
+  .showroom-hero{min-height:48vh;padding:65px 18px 50px}
+  .hero-copy{font-size:15px}
+  .showroom{padding:42px 0 70px}
+  .showroom-top{display:block}.showroom-top h2{font-size:29px}.showroom-top p{margin-top:10px}
+  .viewport{border-radius:20px}
+  .page{grid-template-columns:1fr;padding:12px 3px 28px}
+  .product-card{padding:14px 14px 22px}
+  .stage{height:340px}.product-image{height:290px;width:84%}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img src="../logo.jpg" alt="ZEN GROUP FZE logo"><span>ZEN GROUP</span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#products">Products</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <a class="nav-cta" href="../index.html">Back to Home</a>
+  </div>
+</header>
+
+<main>
+<section class="showroom-hero">
+  <div>
+    <div class="kicker">ZEN GROUP FZE · PRODUCT EXPERIENCE</div>
+    <h1>THE<br>SHOWROOM.</h1>
+    <p class="hero-copy">Step inside our collection. Three products at a time, displayed like they belong on a real showroom floor.</p>
+  </div>
+</section>
+
+<section class="showroom">
+  <div class="container">
+    <div class="showroom-top">
+      <div>
+        <a class="back" href="../index.html">← Back to ZEN GROUP</a>
+        <h2>Security Safes</h2>
+      </div>
+      <p>Hover over a safe to lift it from the stand. Use the dots to move through the collection.</p>
+    </div>
+
+    <div class="collection" id="collection">
+      <div class="viewport">
+        <div class="track" id="track"></div>
+      </div>
+      <div class="dots" id="dots" aria-label="Showroom pages"></div>
+      <div class="counter" id="counter">PAGE 01</div>
+    </div>
+    <div class="empty" id="empty" hidden>No products are available right now.</div>
+  </div>
+</section>
+</main>
+
+<script>
+(async function(){
+  const track=document.getElementById('track');
+  const dots=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const empty=document.getElementById('empty');
+  try{
+    const res=await fetch('../products/products.json');
+    const data=await res.json();
+    const products=(data.products||[]).filter(p=>p.category!=='STORAGE' && ![
+      'CASH COUNTING','SHREDDERS','BINDING','LAMINATION'
+    ].includes(p.category));
+    if(!products.length){empty.hidden=false;return;}
+
+    const pages=[];
+    for(let i=0;i<products.length;i+=3) pages.push(products.slice(i,i+3));
+
+    pages.forEach((page,pageIndex)=>{
+      const section=document.createElement('div');
+      section.className='page';
+      page.forEach(p=>{
+        const card=document.createElement('a');
+        card.className='product-card';
+        card.href='../products/product-detail.html?slug='+encodeURIComponent(p.slug);
+        const brand=(p.name||'').split(' ')[0];
+        card.innerHTML=
+          '<div class="stage">'+
+            '<div class="pedestal"></div>'+
+            '<img class="product-image" src="'+p.image+'" alt="'+escapeHtml(p.name||'Product')+'" loading="'+(pageIndex===0?'eager':'lazy')+'">'+
+          '</div>'+
+          '<div class="product-meta">'+
+            '<div class="product-brand">'+escapeHtml(brand)+'</div>'+
+            '<h3 class="product-name">'+escapeHtml(p.name||'Product')+'</h3>'+
+            '<div class="product-category">'+escapeHtml(p.category||'Security safe')+'</div>'+
+            '<div class="product-action">VIEW PRODUCT <span>→</span></div>'+
+          '</div>';
+        section.appendChild(card);
+      });
+      track.appendChild(section);
+    });
+
+    let current=0;
+    pages.forEach((_,i)=>{
+      const dot=document.createElement('button');
+      dot.className='dot'+(i===0?' active':'');
+      dot.type='button';
+      dot.setAttribute('aria-label','Go to showroom page '+(i+1));
+      dot.addEventListener('click',()=>go(i));
+      dots.appendChild(dot);
+    });
+
+    function go(index){
+      current=Math.max(0,Math.min(index,pages.length-1));
+      track.style.transform='translateX(-'+(current*100)+'%)';
+      [...dots.children].forEach((d,i)=>d.classList.toggle('active',i===current));
+      counter.textContent='PAGE '+String(current+1).padStart(2,'0')+' / '+String(pages.length).padStart(2,'0');
+    }
+
+    let startX=0,deltaX=0;
+    track.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;deltaX=0},{passive:true});
+    track.addEventListener('touchmove',e=>{deltaX=e.touches[0].clientX-startX},{passive:true});
+    track.addEventListener('touchend',()=>{
+      if(Math.abs(deltaX)>50) go(current+(deltaX<0?1:-1));
+    });
+    go(0);
+  }catch(e){
+    empty.hidden=false;
+    empty.textContent='The showroom could not load the product collection.';
+  }
+
+  function escapeHtml(value){
+    return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+})();
+</script>
+</body>
+</html>
