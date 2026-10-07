@@ -136,9 +136,8 @@ h1{font-size:clamp(42px,7vw,86px);line-height:.94;letter-spacing:-.055em;margin:
   try{
     const res=await fetch('../products/products.json');
     const data=await res.json();
-    const products=(data.products||[]).filter(p=>p.category!=='STORAGE' && ![
-      'CASH COUNTING','SHREDDERS','BINDING','LAMINATION'
-    ].includes(p.category));
+    const safeCategories=['SMALL / HOME & OFFICE','MEDIUM','LARGE COMMERCIAL','DATA & MEDIA','DEPOSIT / LOCKERS','VAULT DOORS','LUXURY INTERIOR','FIRE & BURGLARY','GRADE 1','EIKO'];
+    const products=(data.products||[]).filter(p=>safeCategories.includes(p.category));
     if(!products.length){empty.hidden=false;return;}
 
     const pages=[];
