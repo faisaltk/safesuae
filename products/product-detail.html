@@ -7,6 +7,13 @@
 <title>Product Details | ZEN GROUP FZE</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="icon" type="image/jpeg" href="../logo.jpg">
+<style>
+.product-image-carousel{position:relative;width:100%;height:100%;min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-image-carousel img{width:100%;height:100%;max-height:560px;object-fit:contain;display:block}
+.product-image-dots{position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center;gap:9px;z-index:2}
+.product-image-dot{width:9px;height:9px;padding:0;border:0;border-radius:50%;background:#b8c6d2;cursor:pointer;box-shadow:0 1px 4px #0002}
+.product-image-dot[aria-current="true"]{background:var(--blue,#1769aa);transform:scale(1.2)}
+</style>
 </head>
 <body>
 <header class="header">
@@ -109,15 +116,40 @@
       row.append(label,value); box.appendChild(row);
     }
 
-    const img=document.createElement('img');
-    img.src=p.image||('/products/images/'+p.slug+'.webp');
-    img.alt=p.name+' product image';
-    img.loading='eager';
-    img.decoding='async';
-    img.onerror=function(){this.style.display='none';};
     const imageBox=byId('productImageBox');
-    imageBox.classList.remove('image-placeholder');
-    imageBox.replaceChildren(img);
+    if(imageBox){
+      imageBox.classList.remove('image-placeholder');
+      const imageSources=[p.image,p.image2].filter((src,index,array)=>typeof src==='string'&&src.trim()&&array.indexOf(src)===index);
+      const carousel=document.createElement('div');
+      carousel.className='product-image-carousel';
+      const image=document.createElement('img');
+      image.src=imageSources[0]||('/products/images/'+p.slug+'.webp');
+      image.alt=p.name+' product image';
+      image.loading='eager';
+      image.decoding='async';
+      image.onerror=function(){this.style.display='none';};
+      carousel.appendChild(image);
+      if(imageSources.length>1){
+        const dots=document.createElement('div');
+        dots.className='product-image-dots';
+        dots.setAttribute('aria-label','Choose product image');
+        imageSources.forEach((src,index)=>{
+          const dot=document.createElement('button');
+          dot.type='button';
+          dot.className='product-image-dot';
+          dot.setAttribute('aria-label','Show product image '+(index+1));
+          dot.setAttribute('aria-current',index===0?'true':'false');
+          dot.addEventListener('click',()=>{
+            image.src=src;
+            image.alt=p.name+' product image '+(index+1);
+            dots.querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-current',i===index?'true':'false'));
+          });
+          dots.appendChild(dot);
+        });
+        carousel.appendChild(dots);
+      }
+      imageBox.replaceChildren(carousel);
+    }
 
     const office=['CASH COUNTING','SHREDDERS','BINDING','LAMINATION','STORAGE'].includes(p.category);
     byId('back').href=office?'office/index.html':(p.category==='STORAGE'?'storage/index.html':'safes/index.html');
