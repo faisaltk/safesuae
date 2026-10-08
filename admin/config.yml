@@ -54,6 +54,12 @@ collections:
                 name: "image"
                 widget: "image"
                 choose_url: true
+              - label: "Second Product Image (optional)"
+                name: "image2"
+                widget: "image"
+                required: false
+                choose_url: true
+                hint: "Add a second view only when this product needs more than one image."
               - label: "Description"
                 name: "description"
                 widget: "text"
