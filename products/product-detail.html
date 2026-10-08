@@ -50,41 +50,80 @@
 <script src="../script.js"></script>
 <script>
 (async function(){
+  const byId=id=>document.getElementById(id);
   const key=new URLSearchParams(location.search).get('product');
-  const response=await fetch('products.json',{cache:'no-store'});
-  if(!response.ok) return;
-  const data=await response.json();
-  const products=data.products||[];
-  const p=products.find(x=>x.slug===key);
-  if(!p){
-    document.getElementById('name').textContent='Product not found';
-    return;
+  const box=byId('specifications');
+  box.innerHTML='<div class="spec-row"><span>Specifications</span><strong>Loading…</strong></div>';
+
+  async function loadProducts(){
+    let lastError;
+    for(let attempt=0;attempt<3;attempt++){
+      try{
+        const response=await fetch('../products/products.json?refresh='+Date.now()+'-'+attempt,{cache:'no-store'});
+        if(!response.ok) throw new Error('Product data request failed: '+response.status);
+        const data=await response.json();
+        if(!data || !Array.isArray(data.products)) throw new Error('Product data format is invalid');
+        return data.products;
+      }catch(error){
+        lastError=error;
+        if(attempt<2) await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
+      }
+    }
+    throw lastError||new Error('Could not load product data');
   }
-  document.title=p.name+' | ZEN GROUP FZE';
-  document.getElementById('crumb').textContent=p.name;
-  document.getElementById('name').textContent=p.name;
-  document.getElementById('category').textContent=p.category;
-  document.getElementById('imageCategory').textContent=p.category;
-  document.getElementById('description').textContent=p.description||'';
-  document.getElementById('details').innerHTML=(p.details||[]).map(x=>'<li>'+x+'</li>').join('');
-  const box=document.getElementById('specifications');
-  const labels={dimensions:'External dimensions',internal:'Internal dimensions',weight:'Weight',capacity:'Capacity',lock:'Lock type',fire:'Fire rating',storage:'Storage'};
-  const specs=p.specifications||{};
-  const rows=Object.keys(labels).filter(k=>specs[k]).map(k=>'<div class="spec-row"><span>'+labels[k]+'</span><strong>'+specs[k]+'</strong></div>');
-  box.innerHTML=rows.length?rows.join(''):'<div class="spec-row"><span>Specifications</span><strong>Contact us for product details</strong></div>';
-  const img=document.createElement('img');
-  img.src=p.image||('/products/images/'+p.slug+'.webp');
-  img.alt=p.name+' product image';
-  img.loading='eager';
-  img.decoding='async';
-  img.onerror=function(){this.style.display='none';};
-  const imageBox=document.getElementById('productImageBox');
-  imageBox.classList.remove('image-placeholder');
-  imageBox.innerHTML='';
-  imageBox.appendChild(img);
-  const office=['CASH COUNTING','SHREDDERS','BINDING','LAMINATION','STORAGE'].includes(p.category);
-  const back=office?'office/index.html':'safes/index.html';
-  document.getElementById('back').href=back;
+
+  try{
+    const products=await loadProducts();
+    const p=products.find(x=>x.slug===key);
+    if(!p){
+      byId('name').textContent='Product not found';
+      box.innerHTML='<div class="spec-row"><span>Specifications</span><strong>This product could not be found. Please return to the catalogue.</strong></div>';
+      return;
+    }
+    document.title=p.name+' | ZEN GROUP FZE';
+    byId('crumb').textContent=p.name;
+    byId('name').textContent=p.name;
+    byId('category').textContent=p.category||'PRODUCT';
+    byId('imageCategory').textContent=p.category||'PRODUCT';
+    byId('description').textContent=p.description||'';
+    byId('details').replaceChildren(...(p.details||[]).map(value=>{
+      const li=document.createElement('li'); li.textContent=value; return li;
+    }));
+
+    const labels={dimensions:'External dimensions',internal:'Internal dimensions',weight:'Weight',capacity:'Capacity',lock:'Lock type',fire:'Fire rating',storage:'Storage'};
+    const specs=p.specifications||{};
+    const rows=Object.keys(labels).filter(k=>specs[k]!==undefined&&specs[k]!==null&&String(specs[k]).trim()!=='');
+    box.replaceChildren();
+    if(rows.length){
+      rows.forEach(k=>{
+        const row=document.createElement('div'); row.className='spec-row';
+        const label=document.createElement('span'); label.textContent=labels[k];
+        const value=document.createElement('strong'); value.textContent=specs[k];
+        row.append(label,value); box.appendChild(row);
+      });
+    }else{
+      const row=document.createElement('div'); row.className='spec-row';
+      const label=document.createElement('span'); label.textContent='Specifications';
+      const value=document.createElement('strong'); value.textContent='Contact us for product details';
+      row.append(label,value); box.appendChild(row);
+    }
+
+    const img=document.createElement('img');
+    img.src=p.image||('/products/images/'+p.slug+'.webp');
+    img.alt=p.name+' product image';
+    img.loading='eager';
+    img.decoding='async';
+    img.onerror=function(){this.style.display='none';};
+    const imageBox=byId('productImageBox');
+    imageBox.classList.remove('image-placeholder');
+    imageBox.replaceChildren(img);
+
+    const office=['CASH COUNTING','SHREDDERS','BINDING','LAMINATION','STORAGE'].includes(p.category);
+    byId('back').href=office?'office/index.html':(p.category==='STORAGE'?'storage/index.html':'safes/index.html');
+  }catch(error){
+    console.error('Unable to load product details:',error);
+    box.innerHTML='<div class="spec-row"><span>Specifications</span><strong>Could not load product details. Please refresh in a moment or return to the catalogue.</strong></div>';
+  }
 })();
 </script>
 </body>
