@@ -59,7 +59,7 @@
     let lastError;
     for(let attempt=0;attempt<3;attempt++){
       try{
-        const response=await fetch('products.json?refresh='+Date.now()+'-'+attempt,{cache:'no-store'});
+        const response=await fetch(new URL('products.json', window.location.href).href,{cache:'no-store'});
         if(!response.ok) throw new Error('Product data request failed: '+response.status);
         const data=await response.json();
         if(!data || !Array.isArray(data.products)) throw new Error('Product data format is invalid');
