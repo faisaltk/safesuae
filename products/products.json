@@ -43,7 +43,8 @@
         "lock": "Digital + key lock",
         "fire": "1 hour",
         "storage": "1 plastic tray"
-      }
+      },
+      "image2": "/products/images/yesm-015-b.jpg"
     },
     {
       "slug": "eagle-yes-031dk",
