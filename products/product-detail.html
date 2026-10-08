@@ -84,7 +84,8 @@
     byId('crumb').textContent=p.name;
     byId('name').textContent=p.name;
     byId('category').textContent=p.category||'PRODUCT';
-    byId('imageCategory').textContent=p.category||'PRODUCT';
+    const imageCategory=byId('imageCategory');
+    if(imageCategory) imageCategory.textContent=p.category||'PRODUCT';
     byId('description').textContent=p.description||'';
     byId('details').replaceChildren(...(p.details||[]).map(value=>{
       const li=document.createElement('li'); li.textContent=value; return li;
