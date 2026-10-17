@@ -885,7 +885,8 @@
         "weight": "Approx. 400 kg",
         "lock": "Electronic + 2 key locks",
         "storage": "Vault-room door system"
-      }
+      },
+      "image2": "/products/images/sentinel-open.webp"
     },
     {
       "slug": "godrej-rrd",
