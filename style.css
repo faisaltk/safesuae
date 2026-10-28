@@ -513,3 +513,21 @@ footer a{color:#fff}
 @keyframes partner-marquee-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.partner-marquee-track{animation:none}}
 @media(max-width:600px){.partner-marquee{height:clamp(38px,5vh,48px)}.partner-marquee-group{gap:28px;padding:0 18px}.partner-marquee-track{animation-duration:22s}}
+
+
+/* Keep catalogue card descriptions compact so long product copy cannot stretch cards */
+.catalogue-card-body p,
+.product-info p,
+.product p{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:4;
+  line-clamp:4;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  min-height:0;
+  max-height:6.4em;
+  line-height:1.6;
+}
+.catalogue-card-body{display:flex;flex-direction:column;align-items:flex-start}
+.catalogue-card-body .view-btn{margin-top:18px}
