@@ -260,3 +260,41 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
   slideshow.addEventListener('mouseleave',startTimer);
   loadProducts();
 })();
+
+
+/* Partner-brand marquee shared across the public website */
+(function initPartnerMarquee(){
+  if(document.querySelector('.partner-marquee') || !document.body) return;
+  const brands = [
+    {name:'EIKO', sub:'TOTAL SECURITY SYSTEM', cls:'eiko'},
+    {name:'RIBAO', sub:'TECHNOLOGY', cls:'ribao'},
+    {name:'KASO', sub:'', cls:'kaso'},
+    {name:'Cassida', sub:'moving money forward', cls:'cassida'},
+    {name:'VALBERG', sub:'', cls:'valberg'}
+  ];
+  const marquee=document.createElement('div');
+  marquee.className='partner-marquee';
+  marquee.setAttribute('aria-label','Our partner brands');
+  marquee.setAttribute('role','region');
+  const track=document.createElement('div');
+  track.className='partner-marquee-track';
+  for(let repeat=0;repeat<2;repeat++){
+    const group=document.createElement('div');
+    group.className='partner-marquee-group';
+    group.setAttribute('aria-hidden',repeat?'true':'false');
+    brands.forEach(brand=>{
+      const item=document.createElement('div');
+      item.className='partner-marquee-brand '+brand.cls;
+      const name=document.createElement('strong');
+      name.textContent=brand.name;
+      item.appendChild(name);
+      if(brand.sub){const sub=document.createElement('span');sub.textContent=brand.sub;item.appendChild(sub);}
+      group.appendChild(item);
+    });
+    track.appendChild(group);
+  }
+  marquee.appendChild(track);
+  const header=document.querySelector('header.header, .header, header');
+  if(header && header.parentNode) header.insertAdjacentElement('afterend',marquee);
+  else document.body.prepend(marquee);
+})();
