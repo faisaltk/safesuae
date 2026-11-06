@@ -270,7 +270,10 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
     {name:'RIBAO', sub:'TECHNOLOGY', cls:'ribao'},
     {name:'KASO', sub:'', cls:'kaso'},
     {name:'Cassida', sub:'moving money forward', cls:'cassida'},
-    {name:'VALBERG', sub:'', cls:'valberg'}
+    {name:'VALBERG', sub:'', cls:'valberg'},
+    {name:'Goney Security Solutions', image:'/images/brand-goney.svg', cls:'uploaded-logo'},
+    {name:'Hitachi', image:'/images/brand-hitachi.svg', cls:'uploaded-logo'},
+    {name:'ABUS', image:'/images/brand-abus.svg', cls:'uploaded-logo'}
   ];
   const marquee=document.createElement('div');
   marquee.className='partner-marquee';
@@ -285,10 +288,17 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
     brands.forEach(brand=>{
       const item=document.createElement('div');
       item.className='partner-marquee-brand '+brand.cls;
-      const name=document.createElement('strong');
-      name.textContent=brand.name;
-      item.appendChild(name);
-      if(brand.sub){const sub=document.createElement('span');sub.textContent=brand.sub;item.appendChild(sub);}
+      if(brand.image){
+        const logo=document.createElement('img');
+        logo.src=brand.image;
+        logo.alt=brand.name+' logo';
+        item.appendChild(logo);
+      }else{
+        const name=document.createElement('strong');
+        name.textContent=brand.name;
+        item.appendChild(name);
+        if(brand.sub){const sub=document.createElement('span');sub.textContent=brand.sub;item.appendChild(sub);}
+      }
       group.appendChild(item);
     });
     track.appendChild(group);
