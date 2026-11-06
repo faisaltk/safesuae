@@ -272,7 +272,7 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery => {
     {name:'Cassida', sub:'moving money forward', cls:'cassida'},
     {name:'VALBERG', sub:'', cls:'valberg'},
     {name:'GODREJ', sub:'', cls:'godrej'},
-    {name:'Goney Security Solutions', image:'/images/brand-goney.svg', cls:'uploaded-logo'},
+    {name:'Goney Security Solutions', image:'/images/brand-goney.jpg', cls:'uploaded-logo'},
     {name:'Hitachi', image:'/images/brand-hitachi.svg', cls:'uploaded-logo'},
     {name:'ABUS', image:'/images/brand-abus.svg', cls:'uploaded-logo'}
   ];
